@@ -316,22 +316,22 @@ module.exports.cancelAppointment = async (req, res) => {
         let slots_booked = doctorExists.slots_booked;
         console.log(doctorExists.slots_booked == appointment.slotDate);
         
-        // if (slots_booked[appointment.slotDate]) {
-        //     const index = slots_booked[appointment.slotDate].indexOf(appointment.slotTime);
-        //     if (index !== -1) {
-        //         slots_booked[appointment.slotDate][index] = { status: "Cancelled", reason: "User Request" }; // Mark as cancelled with reason
-        //     } else {
-        //         console.error("Slot time not found for the given date.");
-        //     }
-        // } else {
-        //     console.error("No slots found for the given date.");
-        // }
+        if (slots_booked[appointment.slotDate]) {
+            const index = slots_booked[appointment.slotDate].indexOf(appointment.slotTime);
+            if (index !== -1) {
+                slots_booked[appointment.slotDate][index] = { status: "Cancelled", reason: "User Request" }; // Mark as cancelled with reason
+            } else {
+                console.error("Slot time not found for the given date.");
+            }
+        } else {
+            console.error("No slots found for the given date.");
+        }
 
-        // // Save the updated doctor's slots
-        // await DoctorModel.findByIdAndUpdate(appointment.chooseDoctor, { slots_booked });
+        // Save the updated doctor's slots
+        await DoctorModel.findByIdAndUpdate(appointment.chooseDoctor, { slots_booked });
 
-        // // Delete the appointment
-        // await Appointment.findByIdAndDelete(req.params.id);
+        // Delete the appointment
+        await Appointment.findByIdAndDelete(req.params.id);
 
         return sendResponse(res, 200, "Appointment canceled successfully", 1);
     } catch (error) {
